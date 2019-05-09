@@ -1,0 +1,61 @@
+@startuml
+
+class GenerateMaker
+
+class Generate
+
+interface Template
+class FreeTemplateForBeanDao
+class ThriftTemplateForBeanDao
+
+interface DataSource
+abstract class AbstractDataSource
+class JdbcDataSourceImpl
+class ThriftDataSourceImpl
+
+interface DataCovert
+class JdbcDataCovert
+class ThriftDataCovert
+
+interface Filter
+abstract class AbstractFilter
+class FilterChain
+class FilterManager
+class TableNameFilter
+
+interface MyConnection
+class JdbcMyConnection
+class ThriftConnection
+
+Generate <|--- DataSource
+Template ---|> Generate
+
+
+DataSource <|--AbstractDataSource
+AbstractDataSource <|- JdbcDataSourceImpl
+ThriftDataSourceImpl -|> AbstractDataSource
+
+Template<|- FreeTemplateForBeanDao
+ThriftTemplateForBeanDao -|> Template
+
+
+AbstractDataSource<-- DataCovert :use
+FilterManager --> AbstractDataSource :use
+
+Filter <|-- AbstractFilter
+AbstractFilter <|-- TableNameFilter
+
+FilterChain --> FilterManager :use
+Filter --> FilterChain :use
+
+DataCovert <|- JdbcDataCovert
+ThriftDataCovert -|> DataCovert
+
+GenerateMaker <- Generate :use
+
+MyConnection<-- JdbcMyConnection
+ThriftConnection --> MyConnection
+
+MyConnection -> AbstractDataSource :use
+
+@enduml
